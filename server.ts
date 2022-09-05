@@ -26,11 +26,23 @@ app.use(cors()) //add CORS support to each following route handler
 const client = new Client(dbConfig);
 client.connect();
 
+//GET ROUTE PARAM
 app.get("/", async (req, res) => {
   const dbres = await client.query('select * from testtable');
   res.json(dbres.rows);
 });
 
+//POST ROUTE PARAM
+app.post("/", async (req, res) => {
+  try { 
+  const {description} = req.body;
+  const newPost = await client.query('INSERT INTO testtable (description) VALUES ($1) RETURNING *', [description]);
+  console.log(newPost.rows);
+  res.json(newPost.rows);
+} catch (err) {
+  console.error(err.message);
+}
+})
 
 //Start the server on the given port
 const port = process.env.PORT;
