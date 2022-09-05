@@ -54,6 +54,17 @@ app.post("/pastes", async (req, res) => {
 }
 })
 
+app.delete("pastes/:id", async (req, res)=>{
+  try{
+    const id= parseInt(req.params.id);
+    const deletePost= await client.query('DELETE FROM paste_entities WHERE id=$1',[id])
+    res.send(`paste with id:${id} has been deleted`)
+  }
+  catch(err){
+    console.error(err.message)
+  }
+})
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
