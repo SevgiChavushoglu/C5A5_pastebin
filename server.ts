@@ -27,9 +27,14 @@ const client = new Client(dbConfig);
 client.connect();
 
 //GET ROUTE PARAM
-app.get("/", async (req, res) => {
-  const dbres = await client.query('select * from testtable');
-  res.json(dbres.rows);
+app.get("/pastes", async (req, res) => {
+  try{
+  const mostRecentTenPastes = await client.query('select * from paste_entries order by date desc limit 10');
+  res.json(mostRecentTenPastes.rows);
+  }
+  catch(err){
+    console.error(err.message)
+  }
 });
 
 //POST ROUTE PARAM
