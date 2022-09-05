@@ -38,12 +38,17 @@ app.get("/pastes", async (req, res) => {
 });
 
 //POST ROUTE PARAM
-app.post("/", async (req, res) => {
+app.post("/pastes", async (req, res) => {
   try { 
-  const {description} = req.body;
-  const newPost = await client.query('INSERT INTO testtable (description) VALUES ($1) RETURNING *', [description]);
+  const {pastebody, title} = req.body;
+  if (!pastebody){
+    res.send('Please add a paste')
+  }
+  else {
+  const newPost = await client.query('INSERT INTO paste_entries (pastebody, title) VALUES ($1, $2) RETURNING *', [pastebody, title]);
   console.log(newPost.rows);
   res.json(newPost.rows);
+  }
 } catch (err) {
   console.error(err.message);
 }
