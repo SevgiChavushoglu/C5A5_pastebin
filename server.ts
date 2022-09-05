@@ -53,15 +53,28 @@ app.post("/pastes", async (req, res) => {
   console.error(err.message);
 }
 })
-
-app.delete("pastes/:id", async (req, res)=>{
+app.get<{id:string}>("/pastes/:id", async (req, res)=>{
   try{
     const id= parseInt(req.params.id);
-    const deletePost= await client.query('DELETE FROM paste_entities WHERE id=$1',[id])
-    res.send(`paste with id:${id} has been deleted`)
+    console.log(`${id}`)
+    const selectedPost= await client.query('select from paste_entries where id=$1',[id])
+    //const deletePost= await client.query('DELETE FROM paste_entries WHERE id=$1',[id])
+    res.json(selectedPost.rows)
   }
   catch(err){
     console.error(err.message)
+   
+  }
+})
+
+app.delete("/pastes/:id", async (req, res)=>{
+  try{
+    const { id } = req.params;
+    const deletePost= await client.query('DELETE FROM paste_entries WHERE id=$1',[id])
+    res.send(`post with id: ${id} has been deleted`)
+  }
+  catch(err){
+    res.send(err.message)
   }
 })
 
