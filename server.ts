@@ -37,6 +37,18 @@ app.get("/pastes", async (req, res) => {
   }
 });
 
+//GET SPECIFIC PASTE ROUTE PARAM
+app.get("/pastes/:id", async (req, res) => {
+  try{
+    const id= parseInt(req.params.id);
+    const specificPaste = await client.query('select * from paste_entries WHERE id=$1',[id]);
+    res.json(specificPaste.rows);
+  } catch(err){
+    res.status(500).send("Sorry error!!");
+    console.error(err);
+  }
+});
+
 //POST ROUTE PARAM
 app.post("/pastes", async (req, res) => {
   try { 
