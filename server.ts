@@ -110,7 +110,17 @@ app.post("/pastes/:id/comments", async (req, res) => {
   }});
 
 //DELETE 'pastes/:pasteId/comments/:commentId' to delete a comment of a given id that belongs on a given paste.
-
+app.delete('/pastes/:pasteid/comments/:commentid', async (req,res) => {
+  try {
+    const { pasteid } = req.params;
+    const { commentid } = req.params;
+    const deleteComment = await client.query('DELETE FROM comments WHERE pasteid = $1 AND commentid = $2', [pasteid, commentid])
+    res.send(`comment with comment id: ${commentid} on paste with id: ${pasteid} has been deleted`)
+  } catch(err){
+    res.status(500).send("Sorry error!!");
+    console.error(err);
+  }
+})
 
 //Start the server on the given port
 const port = process.env.PORT;
