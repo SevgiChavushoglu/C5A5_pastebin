@@ -68,7 +68,7 @@ app.post("/pastes", async (req, res) => {
 }
 })
 
-//DELETE ROUTE PARAM
+//DELETE A SPECIFIC PASTE ROUTE PARAM
 app.delete("/pastes/:id", async (req, res)=>{
   try{
     const { id } = req.params;
@@ -82,6 +82,7 @@ app.delete("/pastes/:id", async (req, res)=>{
 })
 
 //COMMENT ROUTE PARAMS
+
 //GET 'pastes/:pasteId/comments' to get all comments corresponding to a specific paste.
 app.get("/pastes/:id/comments", async (req,res) => {
   try{
