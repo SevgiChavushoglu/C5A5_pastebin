@@ -26,6 +26,7 @@ app.use(cors()) //add CORS support to each following route handler
 const client = new Client(dbConfig);
 client.connect();
 
+//PASTE ROUTE PARAMS
 //GET ROUTE PARAM
 app.get("/pastes", async (req, res) => {
   try{
@@ -61,24 +62,13 @@ app.post("/pastes", async (req, res) => {
   console.log(newPost.rows);
   res.json(newPost.rows);
   }
-} catch (err) {
-  console.error(err.message);
+} catch(err){
+  res.status(500).send("Sorry error!!");
+  console.error(err);
 }
 })
-app.get<{id:string}>("/pastes/:id", async (req, res)=>{
-  try{
-    const id= parseInt(req.params.id);
-    console.log(`${id}`)
-    const selectedPost= await client.query('select from paste_entries where id=$1',[id])
-    //const deletePost= await client.query('DELETE FROM paste_entries WHERE id=$1',[id])
-    res.json(selectedPost.rows)
-  }
-  catch(err){
-    console.error(err.message)
-   
-  }
-})
 
+//DELETE ROUTE PARAM
 app.delete("/pastes/:id", async (req, res)=>{
   try{
     const { id } = req.params;
@@ -86,9 +76,41 @@ app.delete("/pastes/:id", async (req, res)=>{
     res.send(`post with id: ${id} has been deleted`)
   }
   catch(err){
-    res.send(err.message)
+    res.status(500).send("Sorry error!!");
+    console.error(err);
   }
 })
+
+//COMMENT ROUTE PARAMS
+//GET 'pastes/:pasteId/comments' to get all comments corresponding to a specific paste.
+app.get("/pastes/:id/comments", async (req,res) => {
+  try{
+    const { id } = req.params;
+    const getAllComments = await client.query('SELECT * FROM comments WHERE pasteid = $1 order by date desc',[id])
+    res.json(getAllComments.rows);
+  }catch(err){
+    res.status(500).send("Sorry error!!");
+    console.error(err);
+  }
+})
+
+//POST 'pastes/:pasteId/comments' to create a new comment specific to a given paste.
+app.post("/pastes/:id/comments", async (req, res) => {
+  try { 
+  const { id } = req.params;
+  const {commentbody} = req.body;
+  if (!commentbody){
+    res.send('Please add a comment')
+  } else {
+    const newComment = await client.query('INSERT INTO comments (commentbody, pasteid) VALUES ($1, $2) RETURNING *', [commentbody, id])
+    res.json(newComment.rows);
+  }} catch(err){
+    res.status(500).send("Sorry error!!");
+    console.error(err);
+  }});
+
+//DELETE 'pastes/:pasteId/comments/:commentId' to delete a comment of a given id that belongs on a given paste.
+
 
 //Start the server on the given port
 const port = process.env.PORT;
