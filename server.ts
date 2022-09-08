@@ -66,7 +66,7 @@ app.post("/pastes", async (req, res) => {
 }
 })
 
-app.delete("pastes/:id", async (req, res)=>{
+app.delete("/pastes/:id", async (req, res)=>{
   try{
     const id= parseInt(req.params.id);
     const deletePost= await client.query('DELETE FROM paste_entities WHERE id=$1',[id])
