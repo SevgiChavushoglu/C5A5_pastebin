@@ -51,7 +51,7 @@ app.get("/pastes/:id", async (req, res) => {
 });
 
 //POST ROUTE PARAM
-app.post("/pastes", async (req, res) => {
+app.post("/pastes/newpaste", async (req, res) => {
   try { 
   const {pastebody, title} = req.body;
   if (!pastebody){
