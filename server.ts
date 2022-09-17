@@ -61,8 +61,9 @@ app.post("/pastes", async (req, res) => {
   console.log(newPost.rows);
   res.json(newPost.rows);
   }
-} catch (err) {
-  console.error(err.message);
+} catch(err){
+  res.status(500).send("Sorry error!!");
+  console.error(err);
 }
 })
 
@@ -73,7 +74,8 @@ app.delete("/pastes/:id", async (req, res)=>{
     res.send(`paste with id:${id} has been deleted`)
   }
   catch(err){
-    console.error(err.message)
+    res.status(500).send("Sorry error!!");
+    console.error(err)
   }
 })
 
